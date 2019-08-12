@@ -35,7 +35,7 @@ public class Robot {
 		this.speed = 0.0f;
 		this.maxSpeed = maxSpeed;
 		this.temperature = 0.0f;
-		this.status = (byte) Status.STAND_BY.ordinal();;
+		this.status = (byte) Status.STAND_BY.ordinal();
 		this.power = 30;
 	}
 	public Robot(String name, float maxSpeed, int power) {
@@ -44,7 +44,7 @@ public class Robot {
 		this.speed = 0.0f;
 		this.maxSpeed = maxSpeed;
 		this.temperature = 0.0f;
-		this.status = (byte) Status.STAND_BY.ordinal();;
+		this.status = (byte) Status.STAND_BY.ordinal();
 		this.power = power;
 	}
 	public String getName() {
@@ -92,6 +92,7 @@ public class Robot {
 	/**
 	 * Diminui a temperatura do robô.
 	 * @param temperature indica a quantidade em Fahrenheit a ser reduzida.
+	 * @throws TemperatureIsZeroException se a temperatura estiver em 0 ºF.
 	 */
 	private void coolDown(float temperature) throws TemperatureIsZeroException {
 		final float OLD = this.temperature;
@@ -312,20 +313,26 @@ public class Robot {
 		this.discharge(20);
 		return this;
 	}
-	public Robot move() throws IsNotExploringException {
+
+    /**
+     * Movimenta o robô explorando o ambiente.
+     * @return instância de Robot
+     * @throws AlreadyStandingByException se o robô já estiver em espera.
+     * @throws IsLowChargeException se a carga da bateria estiver baixa.
+     * @throws IsNotExploringException se o robô não estiver explorando.
+     * @throws IsStandByException se o robô estiver em espera.
+     */
+	public Robot move() throws AlreadyStandingByException, IsLowChargeException, IsNotExploringException
+                            , IsStandByException {
 		final byte EXPLORING = (byte) Status.EXPLORING.ordinal();
 		if (this.status != EXPLORING) {
 			this.log("Não é possível vasculhar: ");
 			throw new IsNotExploringException();
 		}
-		try {
-			this.execute();
-			this.log(this.name + " está vasculhando o local.\n");
-			this.heatUp(this.speed * 0.01f);
-			this.discharge(1);
-		} catch (Exception e) {
-			this.log(e.getMessage());
-		}
+        this.execute();
+        this.log(this.name + " está vasculhando o local.\n");
+        this.heatUp(this.speed * 0.01f);
+        this.discharge(1);
 		return this;
 	}
 
