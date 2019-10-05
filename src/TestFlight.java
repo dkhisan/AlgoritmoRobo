@@ -2,18 +2,18 @@ import robot.core.Robot;
 
 public class TestFlight {
 	public static void main(String[] args) {
-		final Robot matias = new Robot("Matias", 80.0f, 10);
+		final Robot matias = new Robot("Matias", 80.0f, (byte) 60);
 		try {
 			matias
 				.wake()
+				.explore()
 				.speedUp(40.0f)
-				.explore()
+				.move()
+				.move()
+				.move()
+				.back()
 				.stop()
-				.stop()
-				.explore()
-				.stop()
-				.explore()
-				.wake()
+				.turnOff()
 				.show();
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
